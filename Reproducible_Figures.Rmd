@@ -6,15 +6,28 @@ output:
 date: "2023-10-09"
 ---
 
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  font-family: "Arial";
+}
+</style>
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-*The following is a template .rmd RMarkdown file for you to use for your homework submission.*
+```{r packages, include=FALSE}
+# Installs and loads the required packages for this project
 
-*Please Knit your .rmd to a PDF format or HTML and submit that with no identifiers like your name.*
+# Vector of the packages used
+packages <- c("palmerpenguins", "tidyverse")
 
-*To create a PDF, first install tinytex and load the package. Then press the Knit arrow and select "Knit to PDF".*
+# Installs only the packages which are not already downloaded
+install.packages(setdiff(packages, rownames(installed.packages())), dependencies = TRUE)
+# Library all of the packages required
+lapply(packages, library, character.only=TRUE)
+```
 
 ## QUESTION 01: Data Visualisation for Science Communication
 
@@ -29,15 +42,34 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### a) Provide your figure here:
 
-```{r bad figure code, echo=FALSE}
-
-# There is no need to provide the code for your bad figure, just use echo=FALSE so the code is hidden. Make sure your figure is visible after you knit it. 
-
+```{r bad figure code, echo=FALSE, warning=FALSE}
+ggplot(
+  penguins,
+  aes(log(flipper_length_mm), body_mass_g),
+  ) + geom_point(
+  color = "blue"
+) +geom_smooth(
+  color = "blue",
+  se = FALSE,
+  method = lm,
+  formula = y ~ poly(x, 3)
+)+ scale_y_reverse(
+  labels = scales::scientific,
+  n.breaks = 30
+) + scale_x_continuous(
+  n.breaks = 21
+)
 ```
 
 ### b) Write about how your design choices mislead the reader about the underlying data (200-300 words).
 
-*Include references.*
+The design of this graph is misleading for a variety of reasons, firstly the trend line is the same colour as the data points obscuring some of them. This makes it harder to read the actual points on the graph. The trend line is also over fitted to a polynomial formula implying a greater significance to the relationship than is honestly shown in the data. Moreover, the X axis is needlessly placed on a log scale compressing the data points and making the real world values harder to see. The x axis also has too many ticks and guidelines on it, many of which do not align with the data, this makes the graph much busier and seeing the values more difficult. Similarly, the y axis also contains too many ticks, and all the values are needlessly written using scientific notation reducing the ability of the graph to be understood intuitively. This can also have the effect of making the data seem more spaced out than it is. The final confusing factor is that the y axis is plotted upside down with the smallest values at the top of the graph. This has the effect of making it intuitively seem as if penguins with longer flippers weight less when in reality the reverse is true.
+
+[Tips on How to Display Data Badly](https://sphweb.bumc.bu.edu/otlt/mph-modules/bs/datapresentation/DataPresentation9.html)
+
+[Exploring Different Smooths](https://stats.oarc.ucla.edu/r/faq/how-can-i-explore-different-smooths-in-ggplot2/)
+
+[Scales for Continuous Data](https://ggplot2.tidyverse.org/reference/scale_continuous.html)
 
 ------------------------------------------------------------------------
 
