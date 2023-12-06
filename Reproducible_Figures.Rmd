@@ -1,8 +1,8 @@
 ---
 title: "Homework Template"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 date: "2023-10-09"
 ---
 
@@ -151,8 +151,6 @@ penguins_clean <- penguins_raw %>%
   remove_empty_columns_rows() %>%
   remove_comments_row()
 
-head(penguins_clean)
-
 write_csv(penguins_clean, "data/penguins_clean.csv")
 ```
 
@@ -168,7 +166,7 @@ penguins_hypothesis <- penguins_clean %>%
   group_by_species()
 ```
 
-To visually see if their is any interaction between culmen depth and body mass it is important to firstly make an exploratory plot before attempting to test for significance.
+To visually see if their is any interaction between culmen depth and body mass it is important to firstly make an exploratory plot before attempting to test for significance. This plot is saved and can be found in the figures folder.
 ```{r ExploratoryPlot}
 exploratory_culmen_mass_plot <- penguins_hypothesis %>%
   plot_exploratory_culmen_mass()
@@ -212,7 +210,7 @@ Now the simplified model has been generated the significance of it must be teste
 anova(culmen_mod)
 ```
 ### Results & Discussion
-The plot shows the interaction between body mass and culmen depth for just Adelie penguins as in the ANOVA test above.
+The plot shows the interaction between body mass and culmen depth for just Adelie penguins as in the ANOVA test above. This plot is saved and can be found in the figures folder.
 ```{r PlottingResults}
 
 adelie_plot <- penguins_adelie_hypothesis %>%
@@ -227,7 +225,7 @@ save_plot_svg(
 )
 ```
 
-The final results plot shows the same model method applied to all the penguin species.
+The final results plot shows the same model method applied to all the penguin species. This plot is saved and can be found in the figures folder.
 
 ```{r AccuratePlot}
 culmen_mass_plot <- penguins_hypothesis %>%
