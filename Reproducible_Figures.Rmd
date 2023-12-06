@@ -1,8 +1,8 @@
 ---
 title: "Homework Template"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 date: "2023-10-09"
 ---
 
@@ -138,10 +138,14 @@ write_csv(penguins_raw, "data/penguins_raw.csv")
 ```
 
 Next the raw penguin data is cleaned in a variety of ways to make it more intuitive and human readable
-* Edits the column names to make them lower snake_case
-* Shorten the species names so they can be access with one word, in a consistent format, without knowing the full genus and species
-* Removes columns and rows which lack data
-* Removes the comment column as it is not useful for analysis and therefore simplifies the dataset
+
+-   Edits the column names to make them lower snake_case
+
+-   Shorten the species names so they can be access with one word, in a consistent format, without knowing the full genus and species
+
+-   Removes columns and rows which lack data
+
+-   Removes the comment column as it is not useful for analysis and therefore simplifies the dataset
 
 Finally this block saves the cleaned data so that is can be accessed and used in other analysis
 ```{r DataCleaning}

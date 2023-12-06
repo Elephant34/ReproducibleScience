@@ -385,7 +385,7 @@ firstly the trend line is the same colour as the data points obscuring
 some of them. This makes it harder to read the actual points on the
 graph. The trend line is also over fitted to a polynomial formula
 implying a greater significance to the relationship than is honestly
-shown in the data. Moreover, the X axis is needlessly placed on a log
+shown in the data. Moreover, the x axis is needlessly placed on a log
 scale compressing the data points and making the real world values
 harder to see. The x axis also has too many ticks and guidelines on it,
 many of which do not align with the data, this makes the graph much
@@ -460,12 +460,15 @@ source(&quot;functions/Plotting.r&quot;)</code></pre>
 analysis.</p>
 <pre class="r"><code>write_csv(penguins_raw, &quot;data/penguins_raw.csv&quot;)</code></pre>
 <p>Next the raw penguin data is cleaned in a variety of ways to make it
-more intuitive and human readable * Edits the column names to make them
-lower snake_case * Shorten the species names so they can be access with
-one word, in a consistent format, without knowing the full genus and
-species * Removes columns and rows which lack data * Removes the comment
-column as it is not useful for analysis and therefore simplifies the
-dataset</p>
+more intuitive and human readable</p>
+<ul>
+<li><p>Edits the column names to make them lower snake_case</p></li>
+<li><p>Shorten the species names so they can be access with one word, in
+a consistent format, without knowing the full genus and species</p></li>
+<li><p>Removes columns and rows which lack data</p></li>
+<li><p>Removes the comment column as it is not useful for analysis and
+therefore simplifies the dataset</p></li>
+</ul>
 <p>Finally this block saves the cleaned data so that is can be accessed
 and used in other analysis</p>
 <pre class="r"><code>penguins_clean &lt;- penguins_raw %&gt;%
