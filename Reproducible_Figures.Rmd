@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r Packages, include=FALSE}
 # Installs and loads the required packages for this project
-# renv should make this redundant, but this acts as a precaution in case it fails
+# renv should make this redundant, however, I was unable to get renv to function correctly on my laptop
 
 # Vector of the packages used
 packages <- c("palmerpenguins", "tidyverse", "janitor", "svglite")
