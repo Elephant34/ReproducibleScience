@@ -1,8 +1,8 @@
 ---
 title: "Homework Template"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 date: "2023-10-09"
 ---
 
@@ -249,7 +249,7 @@ The ANOVA shows that there is a significant correlation between penguin body mas
 
 *Upload your RProject you created for **Question 2** and any files and subfolders used to GitHub. Do not include any identifiers such as your name. Make sure your GitHub repo is public.*
 
-*GitHub link:*
+*GitHub link:* https://github.com/Elephant34/ReproducibleScience
 
 *You will be marked on your repo organisation and readability.*
 
