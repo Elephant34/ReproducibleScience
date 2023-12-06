@@ -17,11 +17,12 @@ date: "2023-10-09"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r packages, include=FALSE}
+```{r Packages, include=FALSE}
 # Installs and loads the required packages for this project
+# renv should make this redundant, but this acts as a precaution in case it fails
 
 # Vector of the packages used
-packages <- c("palmerpenguins", "tidyverse")
+packages <- c("palmerpenguins", "tidyverse", "janitor", "svglite")
 
 # Installs only the packages which are not already downloaded
 install.packages(setdiff(packages, rownames(installed.packages())), dependencies = TRUE)
@@ -42,7 +43,7 @@ lapply(packages, library, character.only=TRUE)
 
 ### a) Provide your figure here:
 
-```{r bad figure code, echo=FALSE, warning=FALSE}
+```{r BadFigureCode, echo=FALSE, warning=FALSE}
 ggplot(
   penguins,
   aes(log(flipper_length_mm), body_mass_g),
@@ -125,32 +126,123 @@ The design of this graph is misleading for a variety of reasons, firstly the tre
 
 ### Introduction
 
-```{r Data Exploration}
+To begin the analysis the common functions for cleaning and plotting must be sourced so they are accessible in future code blocks.
+```{r Sourcing}
+source("functions/Cleaning.r")
+source("functions/Plotting.r")
+```
 
-# Make sure your code prints. 
+Next a copy of the original raw data is saved so it can be accessed "as is" if it is needed for future studies or to validate this analysis.
+```{r DataRawSaving}
+write_csv(penguins_raw, "data/penguins_raw.csv")
+```
 
+Next the raw penguin data is cleaned in a variety of ways to make it more intuitive and human readable
+* Edits the column names to make them lower snake_case
+* Shorten the species names so they can be access with one word, in a consistent format, without knowing the full genus and species
+* Removes columns and rows which lack data
+* Removes the comment column as it is not useful for analysis and therefore simplifies the dataset
+
+Finally this block saves the cleaned data so that is can be accessed and used in other analysis
+```{r DataCleaning}
+penguins_clean <- penguins_raw %>%
+  clean_column_names() %>%
+  shorten_species() %>%
+  remove_empty_columns_rows() %>%
+  remove_comments_row()
+
+head(penguins_clean)
+
+write_csv(penguins_clean, "data/penguins_clean.csv")
 ```
 
 ### Hypothesis
+My hypothesis that penguin body mass can be used to predict penguin culmen depth. My alternative hypothesis is that there is no correlation between body mass and culmen depth 
 
 ### Statistical Methods
-
-```{r Statistics}
-
-# Make sure your code prints. 
-
+To test this hypothesis, it is important to separate out the section of clean data which is of interest to the study. Any cells with NA values are no longer required and so are removed from this hypothesis testing dataset
+```{r HypothesisData}
+penguins_hypothesis <- penguins_clean %>%
+  subset_columns(c("species", "culmen_depth_mm", "body_mass_g")) %>%
+  remove_NA() %>%
+  group_by_species()
 ```
 
+To visually see if their is any interaction between culmen depth and body mass it is important to firstly make an exploratory plot before attempting to test for significance.
+```{r ExploratoryPlot}
+exploratory_culmen_mass_plot <- penguins_hypothesis %>%
+  plot_exploratory_culmen_mass()
+exploratory_culmen_mass_plot
+
+save_plot_svg(
+  figure = exploratory_culmen_mass_plot,
+  filename = "figures/exploratory_culmen_mass_plot.svg",
+  size_cm = 15,
+  scaling = 1
+)
+```
+
+This graph shows that as penguin body mass increases culmen depth decreases. However, the grouping of the species within the graph suggests that the selected trend is an example of Simpson's paradox where the overall trend doesn't match the trend within each species. This graph suggests that within species as body mass increases so does culmen depth. Therefore, I will use an analysis of covarience (ANCOVA) to test if there is any significant differences caused by the species interaction before analysing individually.
+
+
+To run an ANCOVA a model must be generated and the data checked to make sure it meats the assumptions of an ANCOVA- the data must be sampled randomly and be normally distributed. It is assumed that the dataset was collected correctly with random sampling therefore the code will only check for normality in the model.
+
+```{r StatsInteractionModel}
+culmen_interaction_mod <- lm(culmen_depth_mm ~ species * body_mass_g, penguins_hypothesis)
+plot(culmen_interaction_mod, which = 1)
+plot(culmen_interaction_mod, which = 2)
+```
+
+These plots show that the data is normally distributed without any transformations, therefore we can proceed with the analysis
+
+```{r StatsANCOVA}
+anova(culmen_interaction_mod)
+```
+The ANCOVA shows that the interaction between species and body mass is not significant- the increase in culmen length due to body mass is not different between species. This means the model can be simplified to not include the interaction. Due to the Simpson's paradox effect shown in the exploratory plot I will only analyse the trend for one species, and as the interaction is not significant as shown by the ANCOVA it can be assumed that this slope is the same for all species.
+
+```{r StatsModel}
+penguins_adelie_hypothesis <- penguins_hypothesis %>%
+  filter_by_species("Adelie")
+
+culmen_mod <- lm(culmen_depth_mm ~ body_mass_g, penguins_adelie_hypothesis)
+```
+Now the simplified model has been generated the significance of it must be tested through an ANOVA
+
+```{r StatsANOVA}
+anova(culmen_mod)
+```
 ### Results & Discussion
+The plot shows the interaction between body mass and culmen depth for just Adelie penguins as in the ANOVA test above.
+```{r PlottingResults}
 
-```{r Plotting Results}
+adelie_plot <- penguins_adelie_hypothesis %>%
+  plot_adelie_results()
+adelie_plot
 
-# Make sure your code prints. 
-
+save_plot_svg(
+  figure = adelie_plot,
+  filename = "figures/adelie_plot.svg",
+  size_cm = 15,
+  scaling = 1
+)
 ```
 
-### Conclusion
+The final results plot shows the same model method applied to all the penguin species.
 
+```{r AccuratePlot}
+culmen_mass_plot <- penguins_hypothesis %>%
+  plot_culmen_mass()
+culmen_mass_plot
+
+save_plot_svg(
+  figure = culmen_mass_plot,
+  filename = "figures/culmen_mass_plot.svg",
+  size_cm = 15,
+  scaling = 1
+)
+```
+### Conclusion
+The ANOVA shows that there is a significant correlation between penguin body mass and culmen depth. The results graph visibly demonstraights that this is a positive correlation. As the body mass of the penguin increases the culmen depth also increases. This may be due to penguins with more access to food being able to grow deeper culmens. Alternatively the interaction could be the reverse and penguins with deeper culmens are more effective foragers. This may be due to being able to access novel food sources or being more proficient at catching prey. This slope of this interaction not significantly different between the penguins as shown by the ANCOVA.
 ------------------------------------------------------------------------
 
 ## QUESTION 3: Open Science
