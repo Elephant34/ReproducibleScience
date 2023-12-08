@@ -243,9 +243,12 @@ save_plot_svg(
   scaling = 1
 )
 ```
+
 ### Conclusion
 
+
 The ANOVA shows that there is a significant correlation between penguin body mass and culmen depth. The results graph visibly demonstraights that this is a positive correlation. As the body mass of the penguin increases the culmen depth also increases. This may be due to penguins with more access to food being able to grow deeper culmens. Alternatively the interaction could be the reverse and penguins with deeper culmens are more effective foragers. This may be due to being able to access novel food sources or being more proficient at catching prey. This slope of this interaction not significantly different between the penguins as shown by the ANCOVA.
+
 ------------------------------------------------------------------------
 
 ## QUESTION 3: Open Science
